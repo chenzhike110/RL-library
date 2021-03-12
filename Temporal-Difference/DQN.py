@@ -16,6 +16,7 @@ hyperparameters = {
     "discount_rate":0.99,
     "start_train":300,
     "train_epoch":1000,
+    "device":torch.device("cuda")
 }
 
 class replay_buffer(object):
@@ -24,12 +25,12 @@ class replay_buffer(object):
         self.length = max_length
         self.memory = deque(maxlen=self.length)
         self.experience = namedtuple("Experience", field_names=["state","action","reward","next_state","done"])
-        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        self.device = hyperparameters["device"]
         self.batch_size = batch_size
 
     def add_experience(self, states, actions, rewards, next_states, dones):
         if len(states)>1:
-            assert len(dones) != len(states), "data format error"
+            assert len(dones) == len(states), "data format error"
             experience = [self.experience(state, action, reward, next_state, done) for 
                             state, action, reward, next_state, done in zip(states, actions, rewards, next_states, dones)]
             self.memory.extend(experience)
@@ -38,7 +39,7 @@ class replay_buffer(object):
             self.memory.append(experience)
     
     def get_experience(self, num_experience=None, change_format=True):
-        if num_experience is not None:
+        if num_experience is None:
             batch_size = self.batch_size
         else:
             batch_size = num_experience
@@ -47,7 +48,7 @@ class replay_buffer(object):
             states = torch.from_numpy(np.vstack([e.state for e in experience])).float().to(self.device)
             actions = torch.from_numpy(np.vstack([e.action for e in experience])).float().to(self.device)
             next_states = torch.from_numpy(np.vstack([e.next_state for e in experience])).float().to(self.device)
-            rewards = torch.from_numpy(np.vstack([e.rewards for e in experience])).float().to(self.device)
+            rewards = torch.from_numpy(np.vstack([e.reward for e in experience])).float().to(self.device)
             dones = torch.from_numpy(np.vstack([e.done for e in experience])).float().to(self.device)
             return states, actions, rewards, next_states, dones
         else:
@@ -76,10 +77,10 @@ class DQN_agent(object):
 
     def __init__(self, env):
         self.memory = replay_buffer(hyperparameters["memory_size"], hyperparameters["batch_size"])
-        self.epsilon = 0
+        self.epsilon = 1
         self.minepsilon = hyperparameters["min_epsilon"]
         self.num_action = hyperparameters["action_space"]
-        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        self.device = hyperparameters["device"]
         self.q_network = Q_network(2,self.num_action,[8,16,8]).to(self.device)
         self.optimizer = optim.Adam(self.q_network.parameters(), lr=hyperparameters["lr"], eps=1e-4)
         self.done = False
@@ -108,11 +109,14 @@ class DQN_agent(object):
             Q_target_now = rewards + hyperparameters["discount_rate"] * Q_targets * (1 - dones)
         Q_expected = self.q_network(states).gather(1, actions.long())
         loss = nn.functional.mse_loss(Q_expected, Q_targets)
+        print("loss: ",loss, "epoch_num", self.remain_epoch)
         self.optimizer.zero_grad()
         loss.backward()
         self.optimizer.step()
+        self.epsilon -= (self.epsilon-self.minepsilon)*0.95
 
     def train(self):
+        count = 0
         while self.remain_epoch > 0:
             states = []
             actions = []
@@ -124,8 +128,9 @@ class DQN_agent(object):
             action = self.get_action(state)
             while not done:
                 next_state, reward, done, info = self.env.step(action)
-                self.env.render()
-                time.sleep(0.05)
+                # print(reward, done)
+                # self.env.render()
+                # time.sleep(0.01)
                 states.append(state)
                 actions.append(action)
                 rewards.append(reward)
@@ -134,7 +139,13 @@ class DQN_agent(object):
                 state = next_state
                 action = self.get_action(state)
                 if done and reward > 0:
+                    print(("tries ", count," useful experience! add it!"))
                     self.memory.add_experience(states, actions, rewards, next_states, dones)
+                elif done:
+                    if random.random() < 0.05:
+                        self.memory.add_experience(states, actions, rewards, next_states, dones)
+                    print("tries ", count," useless experience...")
+            count += 1
             if len(self.memory)>hyperparameters["start_train"]:
                 self.learn_from_memory()
                 self.remain_epoch -= 1
