@@ -48,3 +48,15 @@ This is my python library and notes for Reinforcement Learning. Hope I can under
 
   ![td3_3](./image/td3_3.svg)
 
+- TRPO
+
+  ![TRPO](./image/TRPO.svg)
+
+  ![TRPO_1](./image/TRPO_1.svg)
+
+  
+
+- PPO
+
+  ![PPO_1](./image/PPO_1.svg)
+
