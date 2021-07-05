@@ -5,15 +5,15 @@ This is my python library and notes for Reinforcement Learning. Hope I can under
 ### Key Concepts
 
 - Bellman Equations
-  $$
-  \begin{equation}
-  	\begin{split}
-  	& V^{\pi}(s)= \mathop{E}_{a\sim\pi}[r(s,a)+\gamma V^\pi(s')] \\
-  	& Q^{\pi}(s,a)=\mathop{E}_{s'\sim P}[r(s,a)+\gamma \mathop{E}_{a'\sim\pi}[Q^\pi(s',a')]] \\
-  	& V^\pi(s)=\mathop{E}_{a\sim \pi}[Q^\pi(s,a)]
-  	\end{split}
-  \end{equation}
-  $$
+
+  ```math
+  V^{\pi}(s)= \mathop{E}_{a\sim\pi}[r(s,a)+\gamma V^\pi(s')] \\
+  Q^{\pi}(s,a)=\mathop{E}_{s'\sim P}[r(s,a)+\gamma \mathop{E}_{a'\sim\pi}[Q^\pi(s',a')]] \\
+  V^\pi(s)=\mathop{E}_{a\sim \pi}[Q^\pi(s,a)]
+  ```
+
+  
+
   Q(s,a) is Action-value Function and V(s) is value Function
 
 - Advantage Functions
