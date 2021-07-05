@@ -6,7 +6,7 @@ This is my python library and notes for Reinforcement Learning. Hope I can under
 
 - Bellman Equations
 
-  ```math
+  ```mathematica
   V^{\pi}(s)= \mathop{E}_{a\sim\pi}[r(s,a)+\gamma V^\pi(s')] \\
   Q^{\pi}(s,a)=\mathop{E}_{s'\sim P}[r(s,a)+\gamma \mathop{E}_{a'\sim\pi}[Q^\pi(s',a')]] \\
   V^\pi(s)=\mathop{E}_{a\sim \pi}[Q^\pi(s,a)]
@@ -38,7 +38,6 @@ This is my python library and notes for Reinforcement Learning. Hope I can under
   $$
   Q_{truth}=
   $$
-  
 
 $$
 \begin{equation}
