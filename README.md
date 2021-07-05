@@ -1,14 +1,48 @@
 ## Implementation of Reinforcement Learning Algorithm
 
-- Classification of Reinforcement Learning Algorithm
-- ![image-20210312120614455](./map.png)
+This is my python library and notes for Reinforcement Learning. Hope I can understand these algorithms completely.
 
-#### Reinforce Algorithm
+### Key Concepts
+
+- Bellman Equations
+  $$
+  \begin{equation}
+  	\begin{split}
+  	& V^{\pi}(s)= \mathop{E}_{a\sim\pi}[r(s,a)+\gamma V^\pi(s')] \\
+  	& Q^{\pi}(s,a)=\mathop{E}_{s'\sim P}[r(s,a)+\gamma \mathop{E}_{a'\sim\pi}[Q^\pi(s',a')]] \\
+  	& V^\pi(s)=\mathop{E}_{a\sim \pi}[Q^\pi(s,a)]
+  	\end{split}
+  \end{equation}
+  $$
+  Q(s,a) is Action-value Function and V(s) is value Function
+
+- Advantage Functions
+  $$
+  \begin{equation}
+  A^\pi(s,a)=Q^\pi(s,a)-V^\pi(s)
+  \end{equation}
+  $$
+
+### Kinds of Algorithm
+
+![rl_algorithms_9_15](./image/rl_algorithms_9_15.svg)
+
+- Q-Learning
+  $$
+  \begin{equation}
+  	\begin{split}
+  		& Q^{new}(s_t,a_t)=(1-\alpha)Q(s_t,a_t)+\alpha(r_t+\gamma \max_\alpha(Q(s_{t+1},a))) \\
+  		& \alpha \sim Learning \ \ rate，\gamma \sim Discount \ \ factor
+  	\end{split}
+  \end{equation}
+  $$
+  
 
 $$
-\theta = argmax \ U(\theta) = argmax \ \sum_{\tau}P(\tau;\theta)*R(\tau)\\
-P(\tau;\theta) = probability\ \ of \ \ trajectory \ \ \tau \ \ under \ \ \theta , \ \ U(\theta)  \ \ refers \ \ to \ \ the\ \ policy\\
-R(\tau) = \sum_t \ R(s_t,a_t) \\
-\frac{\partial U(\theta)}{\partial \theta}= \sum_{\tau} P(\tau;\theta)*\frac{\partial P(\tau;\theta)}{\partial \theta * P(\tau;\theta)}*R(\tau)=\sum_{\tau}\frac{\partial \log P(\tau;\theta)}{\partial \theta}*P(\tau;\theta)*R(\tau) =E(\frac{\partial \log P(\tau;\theta)}{\partial \theta}*R(\tau))\\
+\begin{equation}
+	\begin{split}
+
+	\end{split}
+\end{equation}
 $$
 
