@@ -5,7 +5,7 @@ This is my python library and notes for Reinforcement Learning. Hope I can under
 ### Key Concepts
 
 - Bellman Equations
-  $$
+```math
   \begin{equation}
   	\begin{split}
   	& V^{\pi}(s)= \mathop{E}_{a\sim\pi}[r(s,a)+\gamma V^\pi(s')] \\
@@ -13,7 +13,7 @@ This is my python library and notes for Reinforcement Learning. Hope I can under
   	& V^\pi(s)=\mathop{E}_{a\sim \pi}[Q^\pi(s,a)]
   	\end{split}
   \end{equation}
-  $$
+```
   Q(s,a) is Action-value Function and V(s) is value Function
 
 - Advantage Functions
