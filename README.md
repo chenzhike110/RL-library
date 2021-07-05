@@ -28,13 +28,17 @@ This is my python library and notes for Reinforcement Learning. Hope I can under
 ![rl_algorithms_9_15](./image/rl_algorithms_9_15.svg)
 
 - Q-Learning
-  $$
-  \begin{equation}
+
+  $\begin{equation}
   	\begin{split}
   		& Q^{new}(s_t,a_t)=(1-\alpha)Q(s_t,a_t)+\alpha(r_t+\gamma \max_\alpha(Q(s_{t+1},a))) \\
   		& \alpha \sim Learning \ \ rate，\gamma \sim Discount \ \ factor
   	\end{split}
-  \end{equation}
+  \end{equation}$
+
+- Double Q-Learning
+  $$
+  Q_{truth}=
   $$
   
 
