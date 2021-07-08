@@ -73,4 +73,7 @@ This is my python library and notes for Reinforcement Learning. Hope I can under
 - PPO
 
   ![PPO_1](./image/PPO_1.svg)
-
+  
+  - change KL constraint to Penalty
+  - add clip to make each step smaller
+  - make optimization easier
