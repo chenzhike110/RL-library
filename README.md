@@ -38,7 +38,7 @@ This is my python library and notes for Reinforcement Learning. Hope I can under
 
 - A2C \ A3C
 
-  ![A2C](/home/czk119/Desktop/RL-learning/image/A2C.svg)
+  ![A2C](./image/A2C.svg)
 
 - TD3 (Twin Delayed DDPG)
 
@@ -54,7 +54,21 @@ This is my python library and notes for Reinforcement Learning. Hope I can under
 
   ![TRPO_1](./image/TRPO_1.svg)
 
-  
+  Find the relation between two policy
+
+  ![TRPO_2](./image/TRPO_2.svg)
+
+  - Trick 1
+
+    ![TRPO_3](./image/TRPO_3.svg)
+
+  - Tricks....
+
+    prove a inequality and make the lower bound higher every time
+
+  - Process
+
+    find conjugate gradient and do a line search on the direction
 
 - PPO
 

@@ -1,15 +1,19 @@
+from numpy.lib.stride_tricks import broadcast_arrays
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable, grad
 import numpy as np
 import scipy
+from itertools import count
 
 from .model import critic, actor
 from .utils import *
+from .replay_memory import Memory
+from .state_filter import *
 
 class agent(object):
-    def __init__(self, num_inputs:int, num_outputs:int, opt) -> None:
+    def __init__(self, env, opt) -> None:
         super().__init__()
         self.gamma = opt.gamma
         self.tau = opt.tau
@@ -17,7 +21,13 @@ class agent(object):
         self.damping = opt.damping
         self.max_kl = opt.max_kl
         self.nsteps = opt.nsteps
-        self.actor = actor(num_inputs, num_outputs)
+        self.batch_size = opt.batch_size
+        self.env = env
+        num_inputs = env.observation_space.shape[0]
+        num_actions = env.action_space.shape[0]
+        self.num_inputs = num_inputs
+        self.num_outputs = num_actions
+        self.actor = actor(num_inputs, num_actions)
         self.critic = critic(num_inputs)
     
     def select_action(self, state):
@@ -153,8 +163,48 @@ class agent(object):
         return kl
     
     def learn(self):
-        pass
-    
+
+        running_state = ZFilter((self.num_inputs,),clip=5)
+        running_reward = ZFilter((1,),demean=False,clip=10)
+
+        for i_episode in count(1):
+            memory = Memory()
+
+            num_step = 0
+            reward_batch = 0
+            num_episodes = 0
+            while num_step < self.batch_size:
+                state = self.env.reset()
+                state = running_state(state)
+
+                reward_sum = 0
+                done = False
+                while not done:
+                    action = self.select_action(state)
+                    action = action.data[0].numpy()
+                    next_state, reward, done, _ = self.env.step(action)
+                    reward_sum += reward
+
+                    next_state = running_state(next_state)
+
+                    mask = 1
+                    if done:
+                        mask = 0
+                    
+                    memory.push(state, np.array([action]), mask, next_state, reward)
+                    self.env.render()
+
+                    state = next_state
+                    num_step += 1
+                num_episodes += 1
+                reward_batch += reward_sum
+            reward_batch /= num_episodes
+            batch = memory.sample()
+            self.update_params(batch)
+            print('Episode {}\tLast reward: {}\tAverage reward {:.2f}'.format(
+            i_episode, reward_sum, reward_batch))
+
+                
 
     
 
